@@ -37,7 +37,7 @@ export default function Index() {
       <AppBar position="static" color="transparent" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" className={classes.root}>
-            Genrealise
+            Genrealize
           </Typography>
           <PopupButton text="Login" children={<Login/>}/>
           <PopupButton text="Register" children={<Register/>}/>
@@ -47,7 +47,7 @@ export default function Index() {
         <Grid container alignItems="center" className={classes.gridContainer}>
           <Grid item xs={12} lg={6}>
             <Typography variant={titleSize}>
-              Genrealise
+              Genrealize
             </Typography>
             <Typography variant="h4">
               1,000,000 Songs.
