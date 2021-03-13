@@ -7,6 +7,7 @@
     "clsx": "latest",
     "material-ui-popup-state": "^1.7.2",
     "mdi-material-ui": "^6.22.0",
+    "mongodb": "^3.6.4",
     "next": "latest",
     "next-auth": "^3.11.2",
     "prop-types": "latest",

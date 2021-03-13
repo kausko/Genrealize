@@ -1,18 +1,35 @@
 import { createMuiTheme } from "@material-ui/core";
+import { cyan, grey, teal } from "@material-ui/core/colors";
 import { createContext, useState } from "react";
+
+const primary = {
+  main: teal[500]
+}
+
+const secondary = {
+  main: cyan[900]
+}
 
 const lightTheme = createMuiTheme(
   {
     palette: {
-      type: "light"
-    }
+      type: "light",
+      primary,
+      secondary
+    },
   }
 )
 
 const darkTheme = createMuiTheme(
   {
     palette: {
-      type: "dark"
+      type: "dark",
+      primary,
+      secondary,
+      background: {
+        default: grey[900],
+        paper: grey["A400"]
+      }
     }
   }
 )

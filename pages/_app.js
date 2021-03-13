@@ -5,13 +5,16 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeContext, ThemeProvider } from '../src/global/theme';
 import '../styles/index.css'
+import { Provider } from 'next-auth/client';
 
 function ThemeConsumer({ Component, pageProps }) {
   const { theme } = useContext(ThemeContext)
   return(
     <MuiThemeProvider theme={theme}>
-      <CssBaseline/>
-      <Component {...pageProps}/>
+      <Provider session={pageProps.session}>
+        <CssBaseline/>
+        <Component {...pageProps}/>
+      </Provider>
     </MuiThemeProvider>
   )
 }
