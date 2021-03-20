@@ -4,13 +4,17 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "latest",
+    "axios": "^0.21.1",
     "clsx": "latest",
+    "gimme-the-song": "^1.0.5",
     "material-ui-popup-state": "^1.7.2",
     "mdi-material-ui": "^6.22.0",
     "mongodb": "^3.6.4",
+    "mongoose": "^5.12.1",
+    "multer": "^1.4.2",
     "next": "latest",
     "next-auth": "^3.11.2",
-    "prop-types": "latest",
+    "next-connect": "^0.10.1",
     "react": "latest",
     "react-dom": "latest"
   },

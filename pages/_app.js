@@ -1,23 +1,8 @@
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import Head from 'next/head';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeContext, ThemeProvider } from '../src/global/theme';
-import '../styles/index.css'
-import { Provider } from 'next-auth/client';
-
-function ThemeConsumer({ Component, pageProps }) {
-  const { theme } = useContext(ThemeContext)
-  return(
-    <MuiThemeProvider theme={theme}>
-      <Provider session={pageProps.session}>
-        <CssBaseline/>
-        <Component {...pageProps}/>
-      </Provider>
-    </MuiThemeProvider>
-  )
-}
+import { ThemeProvider } from '../src/global/theme';
+import '../css/index.css'
+import ThemeConsumer from '../src/global/ThemeConsumer';
 
 export default function MyApp(props) {
 
@@ -41,8 +26,3 @@ export default function MyApp(props) {
     </React.Fragment>
   );
 }
-
-MyApp.propTypes = {
-  Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired,
-};

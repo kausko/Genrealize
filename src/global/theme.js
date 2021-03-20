@@ -1,6 +1,6 @@
-import { createMuiTheme } from "@material-ui/core";
-import { cyan, grey, teal } from "@material-ui/core/colors";
-import { createContext, useState } from "react";
+import { createMuiTheme } from "@material-ui/core"
+import { cyan, grey, teal } from "@material-ui/core/colors"
+import { createContext, useState } from "react"
 
 const primary = {
   main: teal[500]
@@ -34,16 +34,29 @@ const darkTheme = createMuiTheme(
   }
 )
 
+const reverse = {
+  light: darkTheme,
+  dark: lightTheme
+}
+
 const ThemeContext = createContext()
 
 const ThemeProvider = ({ children }) => {
 
     const [theme, setTheme] = useState(
-      (typeof window !== "undefined" && window.matchMedia('(prefers-color-scheme: light)').matches) ? lightTheme : darkTheme
+      (
+        (typeof localStorage !== "undefined" && localStorage.getItem("theme") === "light")
+        ||
+        (typeof window !== "undefined" && window.matchMedia('(prefers-color-scheme: light)').matches)
+      ) 
+      ? lightTheme 
+      : darkTheme
     )
 
     const toggleTheme = () => {
-        setTheme(theme.palette.type === 'dark' ? lightTheme : darkTheme)
+      setTheme(reverse[theme.palette.type])
+      if (typeof localStorage !== "undefined")
+        localStorage.setItem("theme", reverse[theme.palette.type].palette.type)
     }
 
     return (
