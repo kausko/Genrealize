@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "latest",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "axios": "^0.21.1",
     "clsx": "latest",
     "gimme-the-song": "^1.0.5",
@@ -16,7 +17,10 @@
     "next-auth": "^3.11.2",
     "next-connect": "^0.10.1",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-draggable": "^4.4.3",
+    "react-player": "^2.9.0",
+    "ytsr": "^3.3.1"
   },
   "scripts": {
     "dev": "next",

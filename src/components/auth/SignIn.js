@@ -1,10 +1,10 @@
-import { Avatar, Button, Card, CardActions, CardContent, Grid, TextField, makeStyles, LinearProgress } from "@material-ui/core";
+import { Box, Button, Card, CardContent, Grid, TextField, makeStyles, CircularProgress, Typography } from "@material-ui/core";
 import { red } from "@material-ui/core/colors";
-import { Google, Github } from 'mdi-material-ui'
+import { Google } from 'mdi-material-ui'
 import { signIn } from "next-auth/client";
 import { useState } from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(_theme => ({
     cardActions: {
         width: "100%",
         justifyContent: "center"
@@ -35,7 +35,7 @@ export default function Login() {
         <Card style={{ maxWidth: "400px" }}>
             <form onSubmit={handleSignIn('email')}>
                 <CardContent>
-                    <Grid container spacing={1}>
+                    <Grid container spacing={1} justify="center">
                         <Grid item xs={12}>
                             <TextField
                                 label="Email"
@@ -54,14 +54,27 @@ export default function Login() {
                                 Sign In
                             </Button>
                         </Grid>
-                        <Grid item xs={12}>
-                            {
-                                loading ?
-                                <LinearProgress/> :
-                                <Button disabled fullWidth>
-                                    Or
-                                </Button>
-                            }
+                        <Grid item>
+                            <Box position="relative" display="inline-flex">
+                                <CircularProgress variant={loading ? "indeterminate" : "determinate"} value={0}/>
+                                {
+                                    !loading &&
+                                    <Box
+                                        top={0}
+                                        left={0}
+                                        bottom={0}
+                                        right={0}
+                                        position="absolute"
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                    >
+                                        <Typography variant="caption" component="div" color="textSecondary">
+                                            OR
+                                        </Typography>
+                                    </Box>
+                                }
+                            </Box>
                         </Grid>
                         <Grid item xs={12}>
                             <Button
