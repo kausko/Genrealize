@@ -14,8 +14,8 @@ const handler = nextConnect({
 .get((req, res) => {
   ytsr(req.query?.q || 'Never gonna give you up Rick Astley', { limit: 5 })
   .then(ytres => {
-    const yturl = ytres.items.find(item => item.type === 'video').url
-    res.status(200).json(yturl || "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    const ytdata = ytres.items.find(item => item.type === 'video')
+    res.status(200).json(ytdata)
   })
 })
 .use(
