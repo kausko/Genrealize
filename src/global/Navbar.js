@@ -19,6 +19,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image'
 import ReactPlayer from 'react-player/youtube';
 import Draggable from 'react-draggable';
+import Player from './Player';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -41,8 +42,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Navbar({ Component, pageProps }) {
+export default function Navbar(props) {
   const [session, loading] = useSession();
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  const classes = useStyles();
+  const router = useRouter();
 
   if (loading)
     return <Image
@@ -52,15 +56,10 @@ export default function Navbar({ Component, pageProps }) {
       objectFit="contain"
     />
 
-  const [urls, setUrls] = useState([])
-  const { theme, toggleTheme } = useContext(ThemeContext);
-  const classes = useStyles();
-  const router = useRouter();
-  const finalProps = {...pageProps, urls, setUrls}
   const toDash = () => router.push('/dashboard');
   const toPlaylists = () => router.push('/playlists');
   
-  const handleSignOut = () => signOut({redirect: false}).then(() => setUrls([])).catch(err => alert(err.message))
+  const handleSignOut = () => signOut({ redirect: false })
   return (
     <div className={classes.root}>
       <AppBar position='sticky' className={classes.appBar} color='transparent'>
@@ -90,29 +89,7 @@ export default function Navbar({ Component, pageProps }) {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Component {...finalProps} />
-      {
-        session && !!urls.length &&
-        <Draggable
-          defaultClassName={classes.dragger}
-          scale={1}
-        >
-          <Card>
-              <Typography 
-                align="center" 
-                className={classes.draggerTypography}
-                gutterBottom
-              >
-                ...
-              </Typography>
-              <ReactPlayer
-                url={urls}
-                onEnded={() => setUrls([])}
-                controls={true}
-              />
-          </Card>
-        </Draggable>
-      }
+      <Player {...props}/>
     </div>
   );
 }
