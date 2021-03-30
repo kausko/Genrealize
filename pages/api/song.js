@@ -3,6 +3,7 @@ import nextConnect from "next-connect";
 import { gimme, setGimmeKey } from 'gimme-the-song'
 import { unlink } from 'fs'
 import ytsr from 'ytsr'
+import Playlist from "../../models/Playlist";
 
 const handler = nextConnect({
   onError: (err, _req, res) => { 
@@ -17,6 +18,13 @@ const handler = nextConnect({
     const ytdata = ytres.items.find(item => item.type === 'video')
     res.status(200).json(ytdata)
   })
+})
+.delete((req, res) => {
+  const { playlist, song } = req.query
+  Playlist.updateOne(
+    { _id: playlist },
+    { $pull: { songs: song }}
+  ).then(resp => res.status(200).json(resp))
 })
 .use(
   multer({ 

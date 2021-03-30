@@ -1,5 +1,5 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, TextField } from "@material-ui/core"
-import { useState } from "react"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from "@material-ui/core"
+import { useEffect, useState } from "react"
 import { fetchPlaylists as getPlaylists, upsertPlaylist } from "../../../apis/playlist"
 import PlaylistOptions from './PlaylistOptions'
 
@@ -7,31 +7,33 @@ const PlayListAdd = ({
   selectedSongs
 }) => {
   const [playlist, setPlaylist] = useState('')
-  const [playlists, setPlaylists] = useState([{ label: 'Loading', _id: 'loading'}])
+  const [playlists, setPlaylists] = useState([{ name: 'Loading', _id: 'loading'}])
   const [openDLG, setOpenDLG] = useState(false)
+
+  useEffect(() => {
+    getPlaylists()
+    .then(res => setPlaylists(res.data))
+    .catch(err => alert(err.message))
+  },[])
 
   const toggleDLG = () => setOpenDLG(!openDLG)
 
   const handlePlaylistChange = event => setPlaylist(event.target.value)
 
-  const fetchPlaylists = () => getPlaylists()
-  .then(res => setPlaylists(res.data))
-  .catch(err => alert(err.message))
-
   const handleSubmit = () => {
     setOpenDLG(false)
-    upsertPlaylist(playlist, selectedSongs)
+    upsertPlaylist(playlist, Object.values(selectedSongs).filter(song => song.selected))
     .then(() => alert('Playlist added'))
     .catch(err => alert(err.message))
   }
   
   return(
     <>
-    <PlaylistOptions
-      selectedSongs={selectedSongs}
-      toggleDLG={toggleDLG}
-      handleSubmit={handleSubmit}
-    />
+    <PlaylistOptions {...{
+      selectedSongs,
+      toggleDLG,
+      handleSubmit
+    }}/>
     <Dialog open={openDLG} onClose={toggleDLG}>
       <DialogTitle>Add to playlist</DialogTitle>
       <DialogContent>
@@ -45,18 +47,22 @@ const PlayListAdd = ({
       <Button disabled fullWidth>
         OR
       </Button>
-      <Select
-        fullWidth
-        variant="outlined"
-        label="Add to an existing playlist"
-        onClick={fetchPlaylists}
-        onChange={handlePlaylistChange}
-      >
-        {playlists.map(playlist => 
-        <MenuItem key={playlist._id} value={playlist}>
-          {playlist.label}
-        </MenuItem>)}
-      </Select>
+      <FormControl variant="outlined" fullWidth>
+        <InputLabel id="outlined-select-playlist">Add to an existing playlist</InputLabel>
+        <Select
+          fullWidth
+          variant="outlined"
+          label="Add to an existing playlist"
+          labelId="outlined-select-playlist"
+          value={playlist}
+          onChange={handlePlaylistChange}
+        >
+          {playlists.map(playlist => 
+          <MenuItem key={playlist._id} value={playlist}>
+            {playlist.name}
+          </MenuItem>)}
+        </Select>
+      </FormControl>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleSubmit} color="primary">Submit</Button>

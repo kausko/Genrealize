@@ -8,14 +8,12 @@ const PlaylistSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, 'Please provide a email.'],
-    unique: [true,'Email must be unique'],
   },
-  songs: [
-    {
+  songs: [{
       type: mongoose.Schema.Types.ObjectId,
       required: true, 
       ref: 'Song'
-    }
-  ],
+  }],
 });
-module.exports = mongoose.model('Playlist', PlaylistSchema);
+
+export default mongoose.models.Playlist || mongoose.model('Playlist', PlaylistSchema)

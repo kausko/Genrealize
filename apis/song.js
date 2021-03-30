@@ -21,3 +21,7 @@ export const uploadSong = formData => axios.post(
 export const getYTdata = ({ title, artists }) => axios.get(
   `/api/song?q=${title} ${artists.length ? artists.map(a => a.name || '').join(' ') : ''}`
 )
+
+export const deleteSong = (playlistId, songId) => axios.delete(
+  `/api/song?playlist=${playlistId}&song=${songId}`
+)

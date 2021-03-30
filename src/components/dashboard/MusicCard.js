@@ -1,8 +1,9 @@
 import { Card, CardActionArea, CardContent, CardHeader, Checkbox, Chip, Grid, Typography } from "@material-ui/core";
 import { useState } from "react";
 import { getYTdata } from "../../../apis/song";
+import { stopPropagation } from "../../../utils/eventHandler";
 
-const MusicCard = ({ item, selectedSongs, setSelectedSongs, setYtData }) => {
+const MusicCard = ({ item, selectedSongs, setSelectedSongs, setSongs }) => {
 
   const [loading, setLoading] = useState(false)
 
@@ -18,6 +19,7 @@ const MusicCard = ({ item, selectedSongs, setSelectedSongs, setYtData }) => {
         const ytData = (await getYTdata(item)).data
         newSelectedSong.ytData = ytData
       }
+      setLoading(false)
       setSelectedSongs({
         ...selectedSongs,
         [songID]: newSelectedSong
@@ -25,26 +27,24 @@ const MusicCard = ({ item, selectedSongs, setSelectedSongs, setYtData }) => {
     } catch (error) {
       alert(error.message)
     }
-    setLoading(false)
   }
 
   const handleMusicCardClick = async _event => {
     try {
       const songID = item.id
-      let { ytData } = selectedSongs[songID]
-      if (!ytData) {
-        ytData = (await getYTdata(item)).data
+      const song = { ...selectedSongs[songID] }
+      if (!song.ytData) {
+        const ytData = (await getYTdata(item)).data
+        song.ytData = ytData
       }
-      console.log(ytData)
-      setYtData([ytData])
+      setSelectedSongs({
+        ...selectedSongs,
+        [songID]: song
+      })
+      setSongs([song])
     } catch (err) {
       alert(err.message)
     }
-  }
-
-  const stopPropagation = event => {
-    event.stopPropagation()
-    event.preventDefault()
   }
 
   return (
@@ -52,12 +52,7 @@ const MusicCard = ({ item, selectedSongs, setSelectedSongs, setYtData }) => {
         <CardActionArea onClick={handleMusicCardClick}>
           <CardHeader
             title={item.title}
-            subheader={
-              Math.floor(item.duration / 60) +
-              'm' +
-              (item.duration % 60) +
-              's'
-            }
+            subheader={item.artists.map(artist => artist.name).join(", ")}
             action={
               <Checkbox 
                 name={item.id}
@@ -71,18 +66,6 @@ const MusicCard = ({ item, selectedSongs, setSelectedSongs, setYtData }) => {
               />
             }
           />
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Artists
-            </Typography>
-            <Grid container direction="row" spacing={1}>
-              {item.artists.map(artist =>
-                <Grid item key={artist.id}>
-                  <Chip key={artist.id} label={artist.name}/>
-                </Grid>  
-              )}
-            </Grid>
-          </CardContent>
         </CardActionArea>
       </Card>
   )

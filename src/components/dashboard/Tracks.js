@@ -13,7 +13,7 @@ const Tracks = ({
   trackVariants, 
   selectedSongs, 
   setSelectedSongs, 
-  setYtData 
+  setSongs 
 }) => {
 
   const classes = useStyles()
@@ -35,18 +35,17 @@ const Tracks = ({
           <>
             <Grid item xs={12}>
               <Typography variant='h4' gutterBottom className={classes.title}>
-                Similar songs
+                Song variants by AcoustID
               </Typography>
             </Grid>
             {trackVariants.map(track => (
-              <Grid item key={track.id} xs={12} md>
-                {/* <MusicCard {...{ item: track, selectedSongs, setSelectedSongs, setYtData }} /> */}
-                <MusicCard
-                  item={track}
-                  selectedSongs={selectedSongs}
-                  setSelectedSongs={setSelectedSongs}
-                  setYtData={setYtData}
-                />
+              <Grid item key={track.id} xs={12} md='auto'>
+                <MusicCard {...{
+                  item: track,
+                  selectedSongs,
+                  setSelectedSongs,
+                  setSongs
+                }}/>
               </Grid>
             ))}
           </>
@@ -67,13 +66,13 @@ const Tracks = ({
             Identified Song
           </Typography>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <MusicCard 
-            item={track} 
-            selectedSongs={selectedSongs}
-            setSelectedSongs={setSelectedSongs}
-            setYtData={setYtData}
-          />
+        <Grid item xs={12} md='auto'>
+          <MusicCard {...{
+            item: track,
+            selectedSongs,
+            setSelectedSongs,
+            setSongs
+          }}/>
         </Grid>
         <TrackVariants/>
       </>

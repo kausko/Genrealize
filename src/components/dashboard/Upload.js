@@ -59,7 +59,7 @@ const Upload = ({
   }
 
   return(
-    <Grid item xs={12}>
+    <Grid item xs={12} md='auto'>
       <input
         accept='audio/*'
         name='audiofile'

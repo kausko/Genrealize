@@ -16,7 +16,7 @@ export default function Index() {
   return (
     <>
       <Image
-        src="https://cdn.pixabay.com/photo/2016/11/23/00/58/record-player-1851576_1280.jpg"
+        src="/landingBackground.jpg"
         alt="landing background"
         className={`next-image ${muiTheme.palette.type === 'light' ? 'image-light' : ''}`}
         layout="fill"

@@ -38,11 +38,13 @@ const PlaylistOptions = ({
     toggleFAB()
   }
 
+  if (!Object.values(selectedSongs).some(song => song.selected))
+    return null
+
   return(
     <SpeedDial
       ariaLabel="Playlist picker"
       className={classes.speedDial}
-      hidden={!Object.values(selectedSongs).some(song => song.selected)}
       onOpen={toggleFAB}
       onClose={toggleFAB}
       open={openFAB}

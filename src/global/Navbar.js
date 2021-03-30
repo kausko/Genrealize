@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Card,
   IconButton,
   makeStyles,
   MenuItem,
@@ -8,6 +7,7 @@ import {
   Paper,
   Toolbar,
   Typography,
+  useScrollTrigger,
 } from '@material-ui/core';
 import { signOut, useSession } from 'next-auth/client';
 import { useContext, useState } from 'react';
@@ -17,8 +17,6 @@ import { ThemeContext } from './theme';
 import { Brightness4, Brightness7 } from 'mdi-material-ui';
 import { useRouter } from 'next/router';
 import Image from 'next/image'
-import ReactPlayer from 'react-player/youtube';
-import Draggable from 'react-draggable';
 import Player from './Player';
 
 const useStyles = makeStyles(theme => ({
@@ -31,14 +29,6 @@ const useStyles = makeStyles(theme => ({
   title: {
     position: 'relative',
     marginLeft: 0,
-  },
-  dragger: {
-    position: 'absolute',
-    right: theme.spacing(10),
-    top: theme.spacing(10),
-  },
-  draggerTypography: {
-    cursor: "move"
   }
 }));
 
@@ -47,6 +37,7 @@ export default function Navbar(props) {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const classes = useStyles();
   const router = useRouter();
+  const trigger = useScrollTrigger({ disableHysteresis: true, threshold: 20 })
 
   if (loading)
     return <Image
@@ -62,7 +53,7 @@ export default function Navbar(props) {
   const handleSignOut = () => signOut({ redirect: false })
   return (
     <div className={classes.root}>
-      <AppBar position='sticky' className={classes.appBar} color='transparent'>
+      <AppBar position='sticky' className={classes.appBar} color={trigger ? "inherit" : "transparent"}>
         <Toolbar>
           <Typography variant='h6' className={classes.root}>
             Genrealize

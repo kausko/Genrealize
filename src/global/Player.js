@@ -1,7 +1,7 @@
 import { Avatar, Box, Card, CardContent, CardHeader, CardMedia, Grid, IconButton, makeStyles, Slider, Typography } from "@material-ui/core"
 import { Close, Pause, Play, Repeat, RepeatOff, SkipBackward, SkipForward, Video, VideoOff } from "mdi-material-ui"
 import { useSession } from "next-auth/client"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Draggable from "react-draggable"
 import YouTubePlayer from "react-player/youtube"
 
@@ -22,7 +22,8 @@ const useStyles = makeStyles(theme => ({
 
 const Player = ({ Component, pageProps }) => {
   const [session] = useSession()
-  const [ytData, setYtData] = useState([])
+  const [playlistName, setPlaylistName] = useState('')
+  const [songs, setSongs] = useState([])
   const [loop, setLoop] = useState(false)
   const [playing, setPlaying] = useState(true)
   const [running, setRunning] = useState(0)
@@ -33,7 +34,15 @@ const Player = ({ Component, pageProps }) => {
   const player = useRef(null)
   const classes = useStyles()
 
-  const handleClose = () => setYtData([])
+  // useEffect(() => {
+  //   if (songs.length) {
+  //     setRunning(0)
+  //     setPlaying(true)
+  //     setShowVideo(false)
+  //   }
+  // }, [songs])
+
+  const handleClose = () => setSongs([])
   const toggleLoop = () => setLoop(!loop)
   const toggleShowVideo = () => setShowVideo(!showVideo)
 
@@ -48,13 +57,11 @@ const Player = ({ Component, pageProps }) => {
   const setPlayingStatus = (status = !playing) => () => setPlaying(status)
 
   const handleEnded = (unit = 1) => () => {
-    const nextRunner = (running + unit) % ytData.length
+    const nextRunner = (running + unit) % songs.length
     setRunning(nextRunner)
-    setPlayed(0)
-    setDuration(0)
     setPlaying(true)
     if (!loop && !nextRunner) {
-      setYtData([])
+      setSongs([])
     }
   }
 
@@ -91,20 +98,20 @@ const Player = ({ Component, pageProps }) => {
 
   return(
     <>
-    <Component {...{...pageProps, ytData, setYtData}} />
+    <Component {...{...pageProps, running, setRunning, songs, setSongs, playlistName, setPlaylistName}} />
     {
-      !!session && !!ytData.length &&
+      !!session && !!songs.length &&
       <Draggable defaultClassName={classes.draggable} scale={1}>
         <Card className={classes.card}>
           <CardHeader
-            title={!showVideo && ytData[running].title}
-            subheader={!showVideo && ytData[running].author?.name}
+            title={!showVideo && songs[running].title}
+            subheader={!showVideo && songs[running].artists?.map(a => a.name || a.id).join(", ")}
             avatar={
               showVideo ?
               <IconButton onClick={toggleShowVideo}>
                 <VideoOff/>
               </IconButton> :
-              <Avatar alt={ytData[running].title} src={ytData[running].author?.bestAvatar?.url}/>
+              <Avatar alt={songs[running].title} src={songs[running].ytData.author?.bestAvatar?.url}/>
             }
             action={
               <IconButton onClick={handleClose}>
@@ -116,7 +123,7 @@ const Player = ({ Component, pageProps }) => {
             !showVideo &&
             <>
               <CardMedia
-                image={ytData[running].bestThumbnail?.url}
+                image={songs[running].ytData.bestThumbnail?.url}
                 className={classes.media}
                 title="Thumbnail"
               />
@@ -169,7 +176,7 @@ const Player = ({ Component, pageProps }) => {
         <YouTubePlayer
           ref={player}
           style={{display: showVideo ? 'initial' : 'none'}}
-          url={ytData[running].url}
+          url={songs[running].ytData.url}
           playing={playing}
           controls={true}
           onReady={console.log}
