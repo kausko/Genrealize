@@ -17,12 +17,14 @@ import { deletePlaylist as deletePlaylistXHR } from '../../apis/playlist';
 import Playlist from '../../models/Playlist';
 import { stopPropagation } from '../../utils/eventHandler';
 import { useSnackbar } from 'notistack'
+import dbConnect from '../../utils/dbConnect';
 
 /**
  * @param  {import('next').GetServerSidePropsContext} context
  */
 export async function getServerSideProps(context) {
   const email = (await getSession({ req: context.req })).user?.email
+  await dbConnect()
   const playlists = JSON.parse(JSON.stringify(await Playlist.find({ email })))
   return {
     props: {

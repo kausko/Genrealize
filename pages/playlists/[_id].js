@@ -7,19 +7,25 @@ import { deleteSong } from '../../apis/song'
 import PlaylistModel from '../../models/Playlist'
 import { stopPropagation } from '../../utils/eventHandler'
 import { useSnackbar } from 'notistack'
+import dbConnect from '../../utils/dbConnect'
+import Song from '../../models/Song'
+import Artist from '../../models/Artist'
 
 /**
  * @param  {import('next').GetServerSidePropsContext} context
  */
 export async function getServerSideProps(context) {
   const { _id } = context.params
+  await dbConnect()
   const email = (await getSession({ req: context.req })).user?.email
   const playlist = JSON.parse(JSON.stringify((await PlaylistModel
     .findOne({ _id, email })
     .populate({
       path: 'songs',
+      model: Song,
       populate: {
-        path: 'artists'
+        path: 'artists',
+        model: Artist
       }
     })
   )))
