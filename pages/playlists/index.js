@@ -98,6 +98,6 @@ export default function Playlists ({ playlists: initialPlaylists }) {
           />
         </Grid>
       </Grid>
-    </Container>
+     </Container>
   );
 };
