@@ -16,6 +16,7 @@
     "next": "latest",
     "next-auth": "^3.11.2",
     "next-connect": "^0.10.1",
+    "notistack": "^1.0.5",
     "react": "latest",
     "react-dom": "latest",
     "react-draggable": "^4.4.3",

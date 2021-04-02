@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { deleteSong } from '../../apis/song'
 import PlaylistModel from '../../models/Playlist'
 import { stopPropagation } from '../../utils/eventHandler'
+import { useSnackbar } from 'notistack'
 
 /**
  * @param  {import('next').GetServerSidePropsContext} context
@@ -35,7 +36,7 @@ export default function Playlist({ playlist, playlistName, setPlaylistName, runn
   const [orderedSongs, setOrderedSongs] = useState([])
   const router = useRouter()
   const { _id } = router.query
-
+  const { enqueueSnackbar } = useSnackbar()
   useEffect(() => {
     setOrderedSongs(playlist?.name === playlistName ? songs : playlist.songs)
   }, [])
@@ -81,7 +82,7 @@ export default function Playlist({ playlist, playlistName, setPlaylistName, runn
             setSongs(newSongs)
           }
         })
-        .catch(err => alert(err.message))
+        .catch(err => enqueueSnackbar(err.message, { variant: 'error'}))
     }
   }
 

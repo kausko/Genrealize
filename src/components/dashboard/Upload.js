@@ -1,6 +1,7 @@
 import { Avatar, Card, CardActionArea, CardHeader, CircularProgress, Grid, makeStyles } from "@material-ui/core"
 import { Upload as UploadIcon } from "mdi-material-ui"
 import { uploadSong } from "../../../apis/song"
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles(() => ({
   input: {
@@ -18,7 +19,7 @@ const Upload = ({
 }) => {
 
   const classes = useStyles()
-
+  const { enqueueSnackbar } = useSnackbar()
   const handleFileSelect = event => {
     setTrackNotFound(false)
     setLoading(true)
@@ -49,7 +50,7 @@ const Upload = ({
             setTrackNotFound(true)
           }
       })
-      .catch(err => alert(err.message))
+      .catch(err => enqueueSnackbar(err.message, { variant: 'error'}))
       .finally(() => setLoading(false))
     }
   }

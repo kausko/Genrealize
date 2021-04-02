@@ -16,6 +16,7 @@ import { useState } from 'react';
 import { deletePlaylist as deletePlaylistXHR } from '../../apis/playlist';
 import Playlist from '../../models/Playlist';
 import { stopPropagation } from '../../utils/eventHandler';
+import { useSnackbar } from 'notistack'
 
 /**
  * @param  {import('next').GetServerSidePropsContext} context
@@ -34,12 +35,12 @@ export default function Playlists ({ playlists: initialPlaylists }) {
   const [playlists, setPlaylists] = useState([...initialPlaylists])
   const [session] = useSession();
   const router = useRouter()
-  
+  const { enqueueSnackbar } = useSnackbar()
+
   if (!session)
     router.push('/')
 
   const openPlaylist = _id => _e => router.push(`/playlists/${_id}`)
-
   const deletePlaylist = _id => event => {
     stopPropagation(event)
     if (confirm('Are you sure you want to delete this playlist?')) {
@@ -47,7 +48,7 @@ export default function Playlists ({ playlists: initialPlaylists }) {
       .then(() => {
         setPlaylists(playlists.filter(playlist => playlist._id !== _id))
       })
-      .catch(err => alert(err.message))
+      .catch(err => enqueueSnackbar(err.message, { variant: 'error'}))
     }
   }
 

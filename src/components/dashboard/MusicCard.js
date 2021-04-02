@@ -1,11 +1,13 @@
-import { Card, CardActionArea, CardContent, CardHeader, Checkbox, Chip, Grid, Typography } from "@material-ui/core";
+import { Card, CardActionArea, CardContent, CardHeader, Checkbox, Chip, Grid, Typography, Tooltip } from "@material-ui/core";
 import { useState } from "react";
 import { getYTdata } from "../../../apis/song";
 import { stopPropagation } from "../../../utils/eventHandler";
+import { useSnackbar } from 'notistack'
 
 const MusicCard = ({ item, selectedSongs, setSelectedSongs, setSongs }) => {
 
   const [loading, setLoading] = useState(false)
+  const { enqueueSnackbar } = useSnackbar()
 
   const selectSong = async _event => {
     setLoading(true)
@@ -25,7 +27,7 @@ const MusicCard = ({ item, selectedSongs, setSelectedSongs, setSongs }) => {
         [songID]: newSelectedSong
       })
     } catch (error) {
-      alert(error.message)
+      enqueueSnackbar(error.message, { variant: 'error'})
     }
   }
 
@@ -43,30 +45,34 @@ const MusicCard = ({ item, selectedSongs, setSelectedSongs, setSongs }) => {
       })
       setSongs([song])
     } catch (err) {
-      alert(err.message)
+      enqueueSnackbar(err.message, { variant: 'error'})
     }
   }
 
   return (
       <Card>
+        <Tooltip title="Click to play Song">
         <CardActionArea onClick={handleMusicCardClick}>
           <CardHeader
             title={item.title}
             subheader={item.artists.map(artist => artist.name).join(", ")}
             action={
-              <Checkbox 
-                name={item.id}
-                checked={selectedSongs?.[item.id]?.selected || false} 
-                onChange={selectSong}
-                onClick={stopPropagation}
-                onMouseDown={stopPropagation}
-                onMouseOver={stopPropagation}
-                onTouchStart={stopPropagation}
-                indeterminate={loading}
-              />
+              <Tooltip title="Select Song" onMouseOver={stopPropagation}>
+                <Checkbox 
+                  name={item.id}
+                  checked={selectedSongs?.[item.id]?.selected || false} 
+                  onChange={selectSong}
+                  onClick={stopPropagation}
+                  onMouseDown={stopPropagation}
+                  onMouseOver={stopPropagation}
+                  onTouchStart={stopPropagation}
+                  indeterminate={loading}
+                />
+              </Tooltip>
             }
           />
         </CardActionArea>
+        </Tooltip>
       </Card>
   )
 }

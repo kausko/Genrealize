@@ -2,6 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl,
 import { useEffect, useState } from "react"
 import { fetchPlaylists as getPlaylists, upsertPlaylist } from "../../../apis/playlist"
 import PlaylistOptions from './PlaylistOptions'
+import { useSnackbar } from 'notistack'
 
 const PlayListAdd = ({
   selectedSongs
@@ -13,18 +14,19 @@ const PlayListAdd = ({
   useEffect(() => {
     getPlaylists()
     .then(res => setPlaylists(res.data))
-    .catch(err => alert(err.message))
+    .catch(err => enqueueSnackbar(err.message, { variant: 'error'}))
   },[])
 
   const toggleDLG = () => setOpenDLG(!openDLG)
 
   const handlePlaylistChange = event => setPlaylist(event.target.value)
 
+  const { enqueueSnackbar } = useSnackbar()
   const handleSubmit = () => {
     setOpenDLG(false)
     upsertPlaylist(playlist, Object.values(selectedSongs).filter(song => song.selected))
-    .then(() => alert('Playlist added'))
-    .catch(err => alert(err.message))
+    .then(() => enqueueSnackbar('Added Successfully', { variant: 'success'}))
+    .catch(err => enqueueSnackbar(err.message, { variant: 'error'}))
   }
   
   return(
