@@ -2,6 +2,7 @@ import multer from "multer";
 import nextConnect from "next-connect";
 import { gimme, setGimmeKey } from 'gimme-the-song'
 import { unlink } from 'fs'
+import { tmpdir } from 'os'
 import ytsr from 'ytsr'
 import Playlist from "../../models/Playlist";
 
@@ -29,7 +30,7 @@ const handler = nextConnect({
 .use(
   multer({ 
     storage: multer.diskStorage({
-      destination: 'uploads/',
+      destination: tmpdir(),
       filename: (_req, file, cb) => cb(null, file.originalname.split(' ').join(''))
     })
   })
