@@ -1,5 +1,11 @@
 import axios from "axios";
-const BASE_URI = window?.location?.hostname?.includes("localhost") ? "http://localhost:8000" : "https://genrealize.azurewebsites.net"
+let BASE_URI = "https://genrealize.azurewebsites.net"
+try {
+  if (window?.location?.hostname?.includes("localhost"))
+    BASE_URI = "http://localhost:8000"
+} catch (error) {
+  // IGNORE ERROR IN PROD ENV AND USE ORIGINAL URI
+}
 
 /**
  * @param {FormData} formdata 
