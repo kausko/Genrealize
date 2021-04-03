@@ -11,7 +11,7 @@ const handler = nextConnect({
     console.log(err)
     res.status(501).json({ error: err.message })
    },
-  onNoMatch: (req, res) => res.status(405).jaon({ error: req.method + " not allowed"})
+  onNoMatch: (req, res) => res.status(405).json({ error: req.method + " not allowed"})
 })
 .get((req, res) => {
   ytsr(req.query?.q || 'Never gonna give you up Rick Astley', { limit: 5 })
@@ -44,8 +44,7 @@ const handler = nextConnect({
         throw err
       res.status(200).json({
         track,
-        trackVariants: trackVariants.filter(variant => !!variant.title && track.title !== variant.title
-        )
+        trackVariants: trackVariants.filter(variant => !!variant.title && track.title !== variant.title)
       })
     })
   })

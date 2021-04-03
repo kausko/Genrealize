@@ -1,10 +1,11 @@
 import axios from "axios";
+const BASE_URI = window?.location?.hostname?.includes("localhost") ? "http://localhost:8000" : "https://genrealize.azurewebsites.net"
 
 /**
  * @param {FormData} formdata 
  */
 export const uploadSong = formData => axios.post(
-  '/api/song',
+  `${BASE_URI}/api/song`,
   formData,
   {
     headers: {
