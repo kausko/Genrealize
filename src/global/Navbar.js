@@ -10,7 +10,7 @@ import {
   useScrollTrigger,
 } from '@material-ui/core';
 import { signOut, useSession } from 'next-auth/client';
-import { useContext, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import PopupButton from '../components/utils/PopupButton';
 import SignIn from '../components/auth/SignIn';
 import { ThemeContext } from './theme';
@@ -38,6 +38,11 @@ export default function Navbar(props) {
   const classes = useStyles();
   const router = useRouter();
   const trigger = useScrollTrigger({ disableHysteresis: true, threshold: 20 })
+
+  useEffect(() => {
+    router.prefetch('/dashboard')
+    router.prefetch('/playlists')
+  },[])
 
   if (loading)
     return <Image

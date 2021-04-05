@@ -11,7 +11,7 @@ try {
  * @param {FormData} formdata 
  */
 export const uploadSong = formData => axios.post(
-  `${BASE_URI}/api/song`,
+  `${BASE_URI}/song`,
   formData,
   {
     headers: {

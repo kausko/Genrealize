@@ -1,6 +1,8 @@
 import { Avatar, Box, Card, CardContent, CardHeader, CardMedia, Grid, IconButton, makeStyles, Slider, Typography } from "@material-ui/core"
 import { Close, Pause, Play, Repeat, RepeatOff, SkipBackward, SkipForward, Video, VideoOff } from "mdi-material-ui"
 import { useSession } from "next-auth/client"
+import Image from "next/image"
+import { useRouter } from "next/router"
 import { useState, useRef, useEffect } from "react"
 import Draggable from "react-draggable"
 import YouTubePlayer from "react-player/youtube"
@@ -31,16 +33,20 @@ const Player = ({ Component, pageProps }) => {
   const [duration, setDuration] = useState(0)
   const [seeking, setSeeking] = useState(false)
   const [showVideo, setShowVideo] = useState(false)
+  const [pageLoading, setPageLoading] = useState(false)
   const player = useRef(null)
   const classes = useStyles()
+  const router = useRouter()
 
-  // useEffect(() => {
-  //   if (songs.length) {
-  //     setRunning(0)
-  //     setPlaying(true)
-  //     setShowVideo(false)
-  //   }
-  // }, [songs])
+  useEffect(() => {
+    const toggleLoading = () => setPageLoading(!pageLoading)
+    router.events.on('routeChangeStart', toggleLoading)
+    router.events.on('routeChangeComplete', toggleLoading)
+    return () => {
+      router.events.off('routeChangeStart', toggleLoading)
+      router.events.off('routeChangeComplete', toggleLoading)
+    }
+  }, [])
 
   const handleClose = () => setSongs([])
   const toggleLoop = () => setLoop(!loop)
@@ -98,7 +104,16 @@ const Player = ({ Component, pageProps }) => {
 
   return(
     <>
-    <Component {...{...pageProps, running, setRunning, songs, setSongs, playlistName, setPlaylistName}} />
+    {
+      pageLoading ?
+      <Image
+        src="/preloader.svg"
+        alt="Preloader"
+        layout="fill"
+        objectFit="contain"
+      /> :
+      <Component {...{...pageProps, running, setRunning, songs, setSongs, playlistName, setPlaylistName}} />
+    }
     {
       !!session && !!songs.length &&
       <Draggable defaultClassName={classes.draggable} scale={1}>
