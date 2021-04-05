@@ -39,12 +39,12 @@ const Player = ({ Component, pageProps }) => {
   const router = useRouter()
 
   useEffect(() => {
-    const toggleLoading = () => setPageLoading(!pageLoading)
-    router.events.on('routeChangeStart', toggleLoading)
-    router.events.on('routeChangeComplete', toggleLoading)
+    const toggleLoading = state => () => setPageLoading(state)
+    router.events.on('routeChangeStart', toggleLoading(true))
+    router.events.on('routeChangeComplete', toggleLoading(false))
     return () => {
-      router.events.off('routeChangeStart', toggleLoading)
-      router.events.off('routeChangeComplete', toggleLoading)
+      router.events.off('routeChangeStart', toggleLoading(true))
+      router.events.off('routeChangeComplete', toggleLoading(false))
     }
   }, [])
 

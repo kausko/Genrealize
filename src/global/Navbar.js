@@ -1,12 +1,12 @@
 import {
   AppBar,
   IconButton,
+  Link,
   makeStyles,
   MenuItem,
   MenuList,
   Paper,
   Toolbar,
-  Typography,
   useScrollTrigger,
 } from '@material-ui/core';
 import { signOut, useSession } from 'next-auth/client';
@@ -52,17 +52,16 @@ export default function Navbar(props) {
       objectFit="contain"
     />
 
-  const toDash = () => router.push('/dashboard');
-  const toPlaylists = () => router.push('/playlists');
+  const toLocation = location => () => router.push(location)
   
   const handleSignOut = () => signOut({ redirect: false })
   return (
     <div className={classes.root}>
       <AppBar position='sticky' className={classes.appBar} color={trigger ? "inherit" : "transparent"}>
         <Toolbar>
-          <Typography variant='h6' className={classes.root}>
+          <Link variant='h6' className={classes.root} onClick={toLocation('/')}>
             Genrealize
-          </Typography>
+          </Link>
           {
             session ?
             <PopupButton 
@@ -70,8 +69,8 @@ export default function Navbar(props) {
               children={
                 <Paper>
                   <MenuList>
-                    <MenuItem onClick={toDash}>Dashboard</MenuItem>
-                    <MenuItem onClick={toPlaylists}>Playlists</MenuItem>
+                    <MenuItem onClick={toLocation('/dashboard')}>Dashboard</MenuItem>
+                    <MenuItem onClick={toLocation('/playlists')}>Playlists</MenuItem>
                     <MenuItem onClick={toggleTheme}>Theme: {theme.palette.type}</MenuItem>
                     <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
                   </MenuList>
