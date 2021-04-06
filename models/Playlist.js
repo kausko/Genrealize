@@ -14,6 +14,10 @@ const PlaylistSchema = new mongoose.Schema({
       required: true, 
       ref: 'Song'
   }],
+  lastPlayedAt: {
+    type: Date,
+    default: null
+  }
 });
 
 export default mongoose.models.Playlist || mongoose.model('Playlist', PlaylistSchema)
