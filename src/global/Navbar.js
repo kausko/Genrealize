@@ -3,11 +3,10 @@ import {
   IconButton,
   Link,
   makeStyles,
-  MenuItem,
-  MenuList,
-  Paper,
   Toolbar,
   useScrollTrigger,
+  Button,
+  Tooltip
 } from '@material-ui/core';
 import { signOut, useSession } from 'next-auth/client';
 import { useContext, useEffect } from 'react';
@@ -29,7 +28,12 @@ const useStyles = makeStyles(theme => ({
   title: {
     position: 'relative',
     marginLeft: 0,
-  }
+  },
+  button: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
 }));
 
 export default function Navbar(props) {
@@ -64,20 +68,17 @@ export default function Navbar(props) {
           </Link>
           {
             session ?
-            <PopupButton 
-              text={session.user.name || session.user.email} 
-              children={
-                <Paper>
-                  <MenuList>
-                    <MenuItem onClick={toLocation('/dashboard')}>Dashboard</MenuItem>
-                    <MenuItem onClick={toLocation('/playlists')}>Playlists</MenuItem>
-                    <MenuItem onClick={toggleTheme}>Theme: {theme.palette.type}</MenuItem>
-                    <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
-                  </MenuList>
-                </Paper>
-              }
-            /> :
-            <PopupButton text='Sign In' children={<SignIn />} />
+            <div className={classes.button}>
+              <Button variant="text" onClick={toLocation('/dashboard')}>Dashboard</Button>
+              <Button variant="text" onClick={toLocation('/playlists')}>Playlists</Button>
+              <Tooltip title="Sign Out">
+                <Button 
+                  variant="text" 
+                  onClick={handleSignOut}>{session.user.name || session.user.email}
+                </Button>
+              </Tooltip>
+            </div> :
+              <PopupButton text='Sign In' children={<SignIn />} />
           }
           <IconButton color='inherit' onClick={toggleTheme}>
             {theme.palette.type === 'dark' ? <Brightness7 /> : <Brightness4 />}
