@@ -1,60 +1,40 @@
-import { Avatar, Card, CardHeader, CardActionArea, Container, Grid, IconButton, useTheme } from '@material-ui/core'
-import { Delete, Play, Shuffle } from 'mdi-material-ui'
-import { getSession, useSession } from 'next-auth/client'
+import { Card, CardActionArea, Container, Grid, IconButton, useTheme } from '@material-ui/core'
+import { Delete, Shuffle } from 'mdi-material-ui'
+import { useSession } from 'next-auth/client'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { deleteSong } from '../../apis/song'
-import PlaylistModel from '../../models/Playlist'
 import { stopPropagation } from '../../utils/eventHandler'
 import { useSnackbar } from 'notistack'
-import dbConnect from '../../utils/dbConnect'
-import Song from '../../models/Song'
-import Artist from '../../models/Artist'
+import { fetchPlaylistById } from '../../apis/playlist'
+import { LoadableCardHeader } from '../../src/components/utils/Loadable'
 
-/**
- * @param  {import('next').GetServerSidePropsContext} context
- */
-export async function getServerSideProps(context) {
-  const { _id } = context.params
-  await dbConnect()
-  const email = (await getSession({ req: context.req })).user?.email
-  const playlist = JSON.parse(JSON.stringify((await PlaylistModel
-    .findOne({ _id, email })
-    .populate({
-      path: 'songs',
-      model: Song,
-      populate: {
-        path: 'artists',
-        model: Artist
-      }
-    })
-  )))
-  return {
-    props: {
-      playlist
-    }
-  }
-}
-
-export default function Playlist({ playlist, playlistName, setPlaylistName, running, setRunning, songs, setSongs }) {
+export default function Playlist({ playlistName, setPlaylistName, running, setRunning, songs, setSongs }) {
   const theme = useTheme()
+  const [loading, setLoading] = useState(true)
   const [session] = useSession()
-  const [orderedSongs, setOrderedSongs] = useState([])
+  const [playlist, setPlaylist] = useState(null)
+  const [orderedSongs, setOrderedSongs] = useState(Array.from(5).fill(false))
   const router = useRouter()
-  const { _id } = router.query
   const { enqueueSnackbar } = useSnackbar()
+  const { _id } = router.query
+
   useEffect(() => {
-    setOrderedSongs(playlist?.name === playlistName ? songs : playlist.songs)
+    fetchPlaylistById(_id)
+    .then(res => {
+      setOrderedSongs(res.data.name === playlistName ? songs : res.data.songs)
+      setPlaylist(res.data)
+    })
+    .catch(err => enqueueSnackbar(err.message, { variant: 'error' }))
   }, [])
+
+  useEffect(() => {
+    if (!!orderedSongs[0])
+      setLoading(false)
+  },[orderedSongs])
 
   if (!session) {
     router.push('/')
-  }
-
-  const playSongs = () => {
-    setPlaylistName(playlist.name)
-    setRunning(0)
-    setSongs(orderedSongs)
   }
 
   const shuffleSongs = () => {
@@ -66,8 +46,10 @@ export default function Playlist({ playlist, playlistName, setPlaylistName, runn
     setOrderedSongs(array)
   }
 
-  const playSong = index => _event => {
+  const playSong = (index = 0) => _event => {
+    setPlaylistName(playlist.name)
     setRunning(index)
+    setSongs(orderedSongs)
   }
 
   const removeSong = index => event => {
@@ -97,40 +79,44 @@ export default function Playlist({ playlist, playlistName, setPlaylistName, runn
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Card>
-            <CardHeader
-              title={playlist.name}
-              subheader={playlist.songs.length + ' songs'}
-              avatar={
-                <Avatar component="button" onClick={playSongs} style={{ cursor: "pointer" }}>
-                  <Play fontSize="large" />
-                </Avatar>
-              }
-              action={
-                <IconButton onClick={shuffleSongs}>
-                  <Shuffle />
-                </IconButton>
-              }
-              titleTypographyProps={{
-                variant: 'h5',
-                component: 'h5',
-              }}
-              subheaderTypographyProps={{
-                variant: 'body1',
-              }}
-            />
+            <CardActionArea onClick={playSong()}>
+              <LoadableCardHeader
+                loading={loading}
+                title={playlist?.name}
+                subheader={playlist?.songs?.length + ' songs'}
+                action={
+                  <IconButton 
+                    onClick={shuffleSongs}
+                    onMouseDown={stopPropagation}
+                    onMouseOver={stopPropagation}
+                    onTouchStart={stopPropagation}
+                  >
+                    <Shuffle />
+                  </IconButton>
+                }
+                titleTypographyProps={{
+                  variant: 'h5',
+                  component: 'h5',
+                }}
+                subheaderTypographyProps={{
+                  variant: 'body1',
+                }}
+              />
+            </CardActionArea>
           </Card>
         </Grid>
         <Grid container item xs={12}>
           {
             orderedSongs.map((song, index) =>
-              <Grid item xs={12} key={song._id}>
+              <Grid item xs={12} key={`${index}`}>
                 <Card
                   style={{ backgroundColor: (running === index && !!songs.length) ? theme.palette.action.hover : "inherit" }}
                 >
                   <CardActionArea onClick={playSong(index)}>
-                    <CardHeader
-                      title={song.title}
-                      subheader={song.artists.filter(a => !!a.name).map(a => a.name || a.id).join(', ')}
+                    <LoadableCardHeader
+                      loading={loading}
+                      title={song?.title}
+                      subheader={song?.artists?.filter(a => !!a?.name).map(a => a?.name || a?.id).join(', ')}
                       action={
                         <IconButton
                           onClick={removeSong(index)}

@@ -7,13 +7,13 @@ import { SnackbarProvider } from 'notistack'
 
 export default function ThemeConsumer(props) {
   const { theme } = useContext(ThemeContext)
-  return(
+  return (
     <MuiThemeProvider theme={theme}>
       <Provider session={props.pageProps.session}>
-      <SnackbarProvider maxSnack={3}>
-        <CssBaseline/>
-        <Navbar {...props}/>
-      </SnackbarProvider>
+        <SnackbarProvider maxSnack={3}>
+          <CssBaseline />
+          <Navbar {...props} />
+        </SnackbarProvider>
       </Provider>
     </MuiThemeProvider>
   )

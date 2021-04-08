@@ -1,43 +1,38 @@
 import {
-  Avatar,
   Card,
   CardActionArea,
-  CardHeader,
   Container,
   Grid,
   IconButton,
   Typography,
 } from '@material-ui/core';
 import { Delete } from 'mdi-material-ui';
-import { getSession, useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/client';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { deletePlaylist as deletePlaylistXHR } from '../../apis/playlist';
-import Playlist from '../../models/Playlist';
+import { useEffect, useState } from 'react';
+import { deletePlaylist as deletePlaylistXHR, fetchPlaylists } from '../../apis/playlist';
 import { stopPropagation } from '../../utils/eventHandler';
 import { useSnackbar } from 'notistack'
-import dbConnect from '../../utils/dbConnect';
+import { LoadableCardHeader } from '../../src/components/utils/Loadable';
 
-/**
- * @param  {import('next').GetServerSidePropsContext} context
- */
-export async function getServerSideProps(context) {
-  const email = (await getSession({ req: context.req })).user?.email
-  await dbConnect()
-  const playlists = JSON.parse(JSON.stringify(await Playlist.find({ email })))
-  return {
-    props: {
-      playlists
-    }
-  }
-}
-
-export default function Playlists ({ playlists: initialPlaylists }) {
-  const [playlists, setPlaylists] = useState([...initialPlaylists])
+export default function Playlists () {
+  const [loading, setLoading] = useState(true)
+  const [playlists, setPlaylists] = useState(Array.from(5).fill(false))
   const [session] = useSession();
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
+
+  useEffect(() => {
+    fetchPlaylists()
+    .then(res => setPlaylists(res.data))
+    .catch(err => enqueueSnackbar(err.message, { variant: 'error' }))
+  },[])
+
+  useEffect(() => {
+    if (!!playlists[0])
+      setLoading(false)
+  },[playlists])
 
   if (!session)
     router.push('/')
@@ -64,16 +59,17 @@ export default function Playlists ({ playlists: initialPlaylists }) {
         </Grid>
         <Grid item xs={12} md={4}>
           {
-            Array.isArray(playlists) && playlists.map(playlist => 
-              <Grid item xs={12} key={playlist._id}>
+            Array.isArray(playlists) && playlists.map((playlist,index) => 
+              <Grid item xs={12} key={`${index}`}>
                 <Card style={{ margin: "8px" }}>
-                  <CardActionArea onClick={openPlaylist(playlist._id)}>
-                    <CardHeader
-                      title={playlist.name}
-                      subheader={playlist.songs.length + ' songs'}
+                  <CardActionArea onClick={openPlaylist(playlist?._id)}>
+                    <LoadableCardHeader
+                      loading={loading}
+                      title={playlist?.name}
+                      subheader={playlist?.songs?.length + ' songs'}
                       action={
                         <IconButton
-                          onClick={deletePlaylist(playlist._id)}
+                          onClick={deletePlaylist(playlist?._id)}
                           onMouseDown={stopPropagation}
                           onMouseOver={stopPropagation}
                           onTouchStart={stopPropagation}

@@ -12,4 +12,6 @@ export const upsertPlaylist = (playlist, selectedSongs) => axios({
 
 export const fetchPlaylists = () => axios.get('/api/playlists')
 
+export const fetchPlaylistById = _id => axios.get(`/api/playlists/${_id}`)
+
 export const deletePlaylist = _id => axios.delete(`/api/playlists/${_id}`)

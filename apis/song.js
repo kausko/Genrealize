@@ -2,7 +2,7 @@ import axios from "axios";
 let BASE_URI = "https://genrealize.azurewebsites.net"
 try {
   if (window?.location?.hostname?.includes("localhost"))
-    BASE_URI = "http://localhost:8000"
+    BASE_URI = "/api"
 } catch (error) {
   // IGNORE ERROR IN PROD ENV AND USE ORIGINAL URI
 }

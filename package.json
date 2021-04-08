@@ -7,7 +7,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "axios": "^0.21.1",
     "clsx": "latest",
-    "gimme-the-song": "^1.0.5",
+    "gimme-the-song": "^2.0.1",
     "material-ui-popup-state": "^1.7.2",
     "mdi-material-ui": "^6.22.0",
     "mongodb": "^3.6.4",
