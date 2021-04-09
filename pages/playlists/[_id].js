@@ -1,5 +1,14 @@
-import { Card, CardActionArea, Container, Grid, IconButton, useTheme } from '@material-ui/core'
-import { Delete, Shuffle } from 'mdi-material-ui'
+import {
+  Button,
+  Card,
+  CardActionArea, CardMedia,
+  Container,
+  Grid,
+  IconButton,
+  makeStyles,
+  useTheme
+} from '@material-ui/core'
+import { Delete } from 'mdi-material-ui'
 import { useSession } from 'next-auth/client'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -9,21 +18,32 @@ import { useSnackbar } from 'notistack'
 import { fetchPlaylistById } from '../../apis/playlist'
 import { LoadableCardHeader } from '../../src/components/utils/Loadable'
 
-export default function Playlist({ playlistName, setPlaylistName, running, setRunning, songs, setSongs }) {
+const useStyles = makeStyles(theme => ({
+  media: {
+    height: 0,
+    paddingTop: '56.25%', // 16:9
+  },
+  icon: {
+    fontSize: "3.5rem"
+  }
+}))
+
+export default function Playlist({ playlist, setPlaylist, running, setRunning, songs, setSongs }) {
   const theme = useTheme()
   const [loading, setLoading] = useState(true)
   const [session] = useSession()
-  const [playlist, setPlaylist] = useState(null)
-  const [orderedSongs, setOrderedSongs] = useState(Array.from(5).fill(false))
+  const [localPlaylist, setLocalPlaylist] = useState(null)
+  const [orderedSongs, setOrderedSongs] = useState(Array(5).fill(false))
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
   const { _id } = router.query
+  const classes = useStyles()
 
   useEffect(() => {
     fetchPlaylistById(_id)
     .then(res => {
-      setOrderedSongs(res.data.name === playlistName ? songs : res.data.songs)
-      setPlaylist(res.data)
+      setOrderedSongs(res.data.name === playlist.name ? songs : res.data.songs)
+      setLocalPlaylist(res.data)
     })
     .catch(err => enqueueSnackbar(err.message, { variant: 'error' }))
   }, [])
@@ -47,7 +67,7 @@ export default function Playlist({ playlistName, setPlaylistName, running, setRu
   }
 
   const playSong = (index = 0) => _event => {
-    setPlaylistName(playlist.name)
+    setPlaylist(localPlaylist)
     setRunning(index)
     setSongs(orderedSongs)
   }
@@ -58,7 +78,7 @@ export default function Playlist({ playlistName, setPlaylistName, running, setRu
       let newSongs = [...orderedSongs]
       const songId = newSongs.splice(index, 1)[0]._id
       setOrderedSongs(newSongs)
-      deleteSong(playlist._id, songId)
+      deleteSong(localPlaylist._id, songId)
         .then(() => {
           if (index === orderedSongs.length - 1) {
             setSongs([])
@@ -78,62 +98,45 @@ export default function Playlist({ playlistName, setPlaylistName, running, setRu
     <Container>
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Card>
-            <CardActionArea onClick={playSong()}>
-              <LoadableCardHeader
+            <LoadableCardHeader
                 loading={loading}
-                title={playlist?.name}
-                subheader={playlist?.songs?.length + ' songs'}
-                action={
-                  <IconButton 
-                    onClick={shuffleSongs}
-                    onMouseDown={stopPropagation}
-                    onMouseOver={stopPropagation}
-                    onTouchStart={stopPropagation}
-                  >
-                    <Shuffle />
-                  </IconButton>
-                }
-                titleTypographyProps={{
-                  variant: 'h5',
-                  component: 'h5',
-                }}
-                subheaderTypographyProps={{
-                  variant: 'body1',
-                }}
-              />
-            </CardActionArea>
-          </Card>
+                title={localPlaylist?.name || "Loading"}
+                subheader={localPlaylist?.songs?.length + ' songs'}
+                titleTypographyProps={{ variant: "h2" }}
+                subheaderTypographyProps={{ variant: "h4" }}
+            />
+              <Button color="primary" onClick={playSong()}>Play</Button>
+              <Button onClick={shuffleSongs}>Shuffle</Button>
         </Grid>
-        <Grid container item xs={12}>
-          {
-            orderedSongs.map((song, index) =>
-              <Grid item xs={12} key={`${index}`}>
-                <Card
-                  style={{ backgroundColor: (running === index && !!songs.length) ? theme.palette.action.hover : "inherit" }}
+        {
+          orderedSongs.map((song, index) =>
+            <Grid item xs={12} sm={4} md={3} key={`${index}`}>
+              <Card>
+                <CardActionArea
+                  onClick={playSong(index)}
+                  style={{ backgroundColor: (running === index && !!songs.length) ? theme.palette.action.disabledBackground : "inherit" }}
                 >
-                  <CardActionArea onClick={playSong(index)}>
-                    <LoadableCardHeader
-                      loading={loading}
-                      title={song?.title}
-                      subheader={song?.artists?.filter(a => !!a?.name).map(a => a?.name || a?.id).join(', ')}
-                      action={
-                        <IconButton
-                          onClick={removeSong(index)}
-                          onMouseDown={stopPropagation}
-                          onMouseOver={stopPropagation}
-                          onTouchStart={stopPropagation}
-                        >
-                          <Delete />
-                        </IconButton>
-                      }
-                    />
-                  </CardActionArea>
-                </Card>
-              </Grid>
-            )
-          }
-        </Grid>
+                  <CardMedia image={song.ytData?.bestThumbnail?.url} className={classes.media}/>
+                  <LoadableCardHeader
+                    loading={loading}
+                    title={song?.title}
+                    subheader={song?.artists?.filter(a => !!a?.name).map(a => a?.name || a?.id).join(', ')}
+                    action={
+                      <IconButton
+                        onClick={removeSong(index)}
+                        onMouseDown={stopPropagation}
+                        onMouseOver={stopPropagation}
+                        onTouchStart={stopPropagation}
+                      >
+                        <Delete />
+                      </IconButton>
+                    }
+                  />
+                </CardActionArea>
+              </Card>
+            </Grid>
+          )
+        }
       </Grid>
     </Container>
   )

@@ -17,3 +17,7 @@ yarn-error.log*
 
 # Next.js
 /.next
+
+# IDEs
+.idea
+.code

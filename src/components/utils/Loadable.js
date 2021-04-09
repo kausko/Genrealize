@@ -10,13 +10,13 @@ export const LoadableCardHeader = ({loading, ...cardHeaderProps}) => {
   const { avatar, action, title, subheader } = mutatedProps
   if (loading) {
     if (!!avatar)
-      mutatedProps.avatar = <Skeleton><Avatar /></Skeleton>
+      mutatedProps.avatar = <Skeleton variant="circle"><Avatar /></Skeleton>
     if (!!action)
       mutatedProps.action = <Skeleton>{action}</Skeleton>
     if (!!title)
-      mutatedProps.title = <Skeleton width="80%" height={10}/>
+      mutatedProps.title = <Skeleton width="80%" height={10} variant="text" style={{ marginBottom: 6 }}/>
     if (!!subheader)
-      mutatedProps.subheader = <Skeleton width="40%" height={10}/>
+      mutatedProps.subheader = <Skeleton width="40%" height={10} variant="text"/>
   }
   return(
     <CardHeader {...mutatedProps}/>

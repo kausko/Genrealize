@@ -18,7 +18,7 @@ import { LoadableCardHeader } from '../../src/components/utils/Loadable';
 
 export default function Playlists () {
   const [loading, setLoading] = useState(true)
-  const [playlists, setPlaylists] = useState(Array.from(5).fill(false))
+  const [playlists, setPlaylists] = useState(Array(5).fill(false))
   const [session] = useSession();
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
@@ -65,7 +65,7 @@ export default function Playlists () {
                   <CardActionArea onClick={openPlaylist(playlist?._id)}>
                     <LoadableCardHeader
                       loading={loading}
-                      title={playlist?.name}
+                      title={playlist?.name || "Loading"}
                       subheader={playlist?.songs?.length + ' songs'}
                       action={
                         <IconButton

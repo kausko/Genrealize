@@ -14,7 +14,7 @@ import Image from 'next/image';
 
 const useStyles = makeStyles(theme => ({
   dashboard: {
-    minHeight: `calc(100vh - ${theme.spacing(8)}px)`
+    minHeight: `calc(100vh - ${theme.spacing(16)}px)`
   }
 }))
 
