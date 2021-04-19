@@ -1,4 +1,4 @@
-import { AppBar, Avatar, Box, Card, CardHeader, Grid, Hidden, IconButton, makeStyles, Slider, Toolbar, Typography } from "@material-ui/core"
+import { AppBar, Avatar, Card, CardHeader, Grid, Hidden, IconButton, makeStyles, Toolbar, Typography } from "@material-ui/core"
 import { Pause, Play, Repeat, RepeatOff, SkipBackward, SkipForward, Video, VideoOff } from "mdi-material-ui"
 import { useSession } from "next-auth/client"
 import Image from "next/image"
@@ -6,6 +6,7 @@ import { useRouter } from "next/router"
 import { useState, useRef, useEffect } from "react"
 import Draggable from "react-draggable"
 import YouTubePlayer from "react-player/youtube"
+import Seeker from "./Seeker"
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -88,45 +89,7 @@ const Player = ({ Component, pageProps }) => {
   }
 
   const handleDuration = duration => setDuration(duration)
-
-  const Duration = ({ seconds }) => {
-
-    const pad = str => ('0' + str).slice(-2)
-
-    const format = seconds => {
-      const date = new Date(seconds * 1000)
-      const hh = date.getUTCHours()
-      const mm = date.getUTCMinutes()
-      const ss = pad(date.getUTCSeconds())
-      if (hh) {
-        return hh + ":" + pad(mm) + ":" + ss
-      }
-      return mm + ":" + ss
-    }
-    return (
-        <Box minWidth={35}>
-          <Typography variant="body2" color="textSecondary">
-            {format(seconds)}
-          </Typography>
-        </Box>
-    )
-  }
-
-  const Seeker = () =>
-      <Grid item xs={12} md={6}>
-        <Box display="flex" alignItems="center" height="100%">
-          <Duration seconds={duration * played}/>
-          <Box width="100%" mr={1}>
-            <Slider
-                value={played * 100}
-                onChange={handleSeeking(true)}
-                onChangeCommitted={handleSeeking(false)}
-            />
-          </Box>
-          <Duration seconds={duration * (1 - played)}/>
-        </Box>
-      </Grid>
-
+  
   return (
       <>
         {
@@ -158,7 +121,7 @@ const Player = ({ Component, pageProps }) => {
                     />
                   </Grid>
                   <Hidden smDown>
-                    <Seeker/>
+                    <Seeker duration={duration} played={played} handleSeeking={handleSeeking}/>
                   </Hidden>
                   <Grid container item xs justify="flex-end" alignItems="center">
                     <Hidden mdDown>
@@ -192,7 +155,7 @@ const Player = ({ Component, pageProps }) => {
                     </Hidden>
                   </Grid>
                   <Hidden mdUp>
-                    <Seeker/>
+                    <Seeker duration={duration} played={played} handleSeeking={handleSeeking}/>
                   </Hidden>
                 </Grid>
               </Toolbar>
