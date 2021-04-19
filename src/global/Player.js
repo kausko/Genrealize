@@ -212,6 +212,9 @@ const Player = ({ Component, pageProps }) => {
                     onEnded={handleEnded()}
                     onProgress={handleProgress}
                     onDuration={handleDuration}
+                    onReady={console.debug}
+                    onStart={console.debug}
+                    onSeek={console.debug}
                 />
               </Card>
             </Draggable>
