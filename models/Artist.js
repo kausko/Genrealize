@@ -12,4 +12,4 @@ const ArtistSchema = new mongoose.Schema({
   }
 })
 
-export default mongoose.models.Artist || mongoose.model('Artist', ArtistSchema)
+export default mongoose.model('Artist', ArtistSchema)

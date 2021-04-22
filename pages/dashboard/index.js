@@ -65,7 +65,9 @@ export default function DashLanding({ setSongs }) {
         }}/>
         </Grid>
       </Grid>
-      <PlayListAdd {...{selectedSongs}}/>
+      {
+        Object.values(selectedSongs).some(song => song?.selected) && <PlayListAdd {...{selectedSongs}}/>
+      }
     </Container>
   );
 }

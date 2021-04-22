@@ -19,4 +19,4 @@ const songSchema = new mongoose.Schema({
     }
 })
 
-export default mongoose.models.Song || mongoose.model('Song', songSchema)
+export default mongoose.model('Song', songSchema)
