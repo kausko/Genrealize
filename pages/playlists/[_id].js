@@ -106,7 +106,7 @@ export default function Playlist({ playlist, setPlaylist, running, setRunning, s
                 subheaderTypographyProps={{ variant: "h4" }}
             />
               <Button color="primary" onClick={playSong()}>Play</Button>
-              <Button onClick={shuffleSongs}>Shuffle</Button>
+              <Button onClick={shuffleSongs} disabled={songs.length}>Shuffle</Button>
         </Grid>
         {
           orderedSongs.map((song, index) =>

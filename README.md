@@ -1,21 +1,23 @@
 # Genrealize
-A music recognition and recommendation platform that recognizes the song uploaded by user by its [chromaprint](https://acoustid.org/chromaprint) and returns a list of similar songs.
+A music recognition, recommendation and streaming platform that recognizes the song uploaded by user by its [chromaprint](https://acoustid.org/chromaprint) and returns a list of similar songs.
 
 ## Features
 - Passwordless authentication and OAuth using [Next-Auth](https://next-auth.js.org/)
 - Dynamic theming
-- Playlist creation
+- Add songs to playlist/favourites
 - Music A/V player
 
 ## Technologies used
-![image](https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
+
+![image](https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=next-dot-js&logoColor=white)
+![image](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![image](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![image](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node-dot-js&logoColor=white)
 ![image](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+![image](https://img.shields.io/badge/YouTube_API-FF0000?style=for-the-badge&logo=youtube&logoColor=white)
 ![image](https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=material-ui&logoColor=white)
-![image](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)
-![image](https://img.shields.io/badge/Tensorflow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
-![image](https://img.shields.io/badge/Keras-D00000?style=for-the-badge&logo=keras&logoColor=white)
-![image](https://img.shields.io/badge/Numpy-013243?style=for-the-badge&logo=numpy&logoColor=white)
-![image](https://img.shields.io/badge/SciPy-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white)
+![image](https://img.shields.io/badge/microsoft%20azure-0089D6?style=for-the-badge&logo=microsoft-azure&logoColor=white)
+![image](https://img.shields.io/badge/Google_oauth-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)
 
 ## Coming soon
 - Spotify integration for directly adding recommended songs

@@ -13,10 +13,11 @@ import { useContext, useEffect } from 'react';
 import PopupButton from '../components/utils/PopupButton';
 import SignIn from '../components/auth/SignIn';
 import { ThemeContext } from './theme';
-import { Brightness4, Brightness7 } from 'mdi-material-ui';
+import { Brightness4, Brightness7, Cog, PlaylistMusic, ViewDashboardVariant } from 'mdi-material-ui';
 import { useRouter } from 'next/router';
 import Image from 'next/image'
 import Player from './Player';
+import Settings from '../components/utils/Settings';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,9 +31,10 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 0,
   },
   button: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
+    display: "flex",
+    // '& > *': {
+    //   margin: theme.spacing(1),
+    // },
   },
 }));
 
@@ -57,8 +59,7 @@ export default function Navbar(props) {
     />
 
   const toLocation = location => () => router.push(location)
-  
-  const handleSignOut = () => signOut({ redirect: false })
+
   return (
     <div className={classes.root}>
       <AppBar position='sticky' className={classes.appBar} color={trigger ? "inherit" : "transparent"}>
@@ -69,18 +70,17 @@ export default function Navbar(props) {
           {
             session ?
             <div className={classes.button}>
-              <Button variant="text" onClick={toLocation('/dashboard')}>Dashboard</Button>
-              <Button variant="text" onClick={toLocation('/playlists')}>Playlists</Button>
-              <Tooltip title="Sign Out">
-                <Button 
-                  variant="text" 
-                  onClick={handleSignOut}>{session.user.name || session.user.email}
-                </Button>
-              </Tooltip>
+              <IconButton onClick={toLocation('/dashboard')} title="Dashboard">
+                <ViewDashboardVariant/>
+              </IconButton>
+              <IconButton onClick={toLocation('/playlists')} title="Playlists">
+                <PlaylistMusic/>
+              </IconButton>
+              <PopupButton text={<Cog/>} children={<Settings user={session.user}/>} title="Settings"/>
             </div> :
-              <PopupButton text='Sign In' children={<SignIn />} />
+              <PopupButton text='Sign In' children={<SignIn />} title="Sign In"/>
           }
-          <IconButton color='inherit' onClick={toggleTheme}>
+          <IconButton color='inherit' onClick={toggleTheme} title="Toggle Theme">
             {theme.palette.type === 'dark' ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
         </Toolbar>

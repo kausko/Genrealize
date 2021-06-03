@@ -18,7 +18,7 @@ export default function Index() {
       <Image
         src="/landingBackground.jpg"
         alt="landing background"
-        className={`next-image ${muiTheme.palette.type === 'light' ? 'image-light' : ''}`}
+        className="next-image"
         layout="fill"
         objectFit="cover"
         objectPosition="left center"

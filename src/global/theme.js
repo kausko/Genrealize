@@ -3,7 +3,7 @@ import { cyan, grey, teal } from "@material-ui/core/colors"
 import { createContext, useState } from "react"
 
 const primary = {
-  main: teal[500]
+  main: teal["A700"]
 }
 
 const secondary = {

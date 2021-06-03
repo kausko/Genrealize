@@ -1,8 +1,4 @@
 .next-image {
     z-index: -1;
-    opacity: 0.4;
-}
-
-.image-light {
-    background-color: #fafafa;
+    opacity: 0.9;
 }
