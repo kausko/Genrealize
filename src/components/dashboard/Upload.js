@@ -75,7 +75,7 @@ const Upload = ({
           <CardActionArea component="span">
             <CardHeader
               title='Upload Music'
-              subheader='Select any music file of your choice and get a list of similar songs'
+              subheader='Select an full-length mp3 song file and get a list of similar songs'
               avatar={
                 <Avatar>
                   <UploadIcon fontSize="large"/>
