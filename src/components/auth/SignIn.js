@@ -54,7 +54,7 @@ export default function Login() {
                                 Sign In
                             </Button>
                         </Grid>
-                        <Grid item>
+                        {/* <Grid item>
                             <Box position="relative" display="inline-flex">
                                 <CircularProgress variant={loading ? "indeterminate" : "determinate"} value={0}/>
                                 {
@@ -86,7 +86,7 @@ export default function Login() {
                             >
                                 Sign In with Google
                             </Button>
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                 </CardContent>
             </form>
